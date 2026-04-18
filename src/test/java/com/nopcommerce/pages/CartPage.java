@@ -58,10 +58,6 @@ public class CartPage extends BasePage {
     private List<WebElement> plusButtons;
 
     // ===== ACTIONS =====
-    private void waitBasketReady() {
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("mat-table")));
-        // cartRows puede ser 0 si el carrito está vacío (estado válido)
-    }
 
     public int getCartItemsCount() {
         // 0 es válido; no uses waits que exigen filas.
@@ -151,10 +147,10 @@ public class CartPage extends BasePage {
             int rows = driver.findElements(cartRowBy).size();
             if (rows == 0) break;
 
-            // Click siempre sobre el primer trash DISPONIBLE re-localizando
+            // Click siempre sobre el primer trash DISPONIBLE
             safeClick(trashButtonBy);
 
-            // esperar que disminuya la cantidad de filas (o al menos que se refresque)
+            // esperar que disminuya la cantidad de filas
             wait.until(d -> d.findElements(cartRowBy).size() < rows);
         }
     }

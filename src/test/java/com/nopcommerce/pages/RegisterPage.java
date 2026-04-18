@@ -60,10 +60,8 @@ public class RegisterPage extends BasePage {
 
         // Cerrar posibles overlays con ESC
         driver.findElement(By.tagName("body")).sendKeys(Keys.ESCAPE);
-
         safeClick(accountBtn);
         safeClick(loginBtn);
-
 
         // ESPERAR QUE DESAPAREZCA EL SNACKBAR
         wait.until(ExpectedConditions.invisibilityOfElementLocated(
@@ -80,7 +78,6 @@ public class RegisterPage extends BasePage {
         type(emailInput, email);
         type(passwordInput, password);
         type(repeatPasswordInput, repeatPassword);
-
         selectSecurityQuestion(question);
         type(answerInput, answer);
     }
@@ -97,25 +94,20 @@ public class RegisterPage extends BasePage {
         return true;
     }
 
-    // Nueva versión: permite repeatPassword distinto
-
     public void register(String email, String password, String question, String answer) {
         fillForm(email, password, password, question, answer);
         clickRegisterIfEnabled();
     }
 
     public void triggerValidation() {
-        // focus + blur con TAB para que Angular marque touched
+
         try {
             emailInput.click();
             emailInput.sendKeys(Keys.TAB);
-
             passwordInput.click();
             passwordInput.sendKeys(Keys.TAB);
-
             repeatPasswordInput.click();
             repeatPasswordInput.sendKeys(Keys.TAB);
-
             answerInput.click();
             answerInput.sendKeys(Keys.TAB);
 
@@ -123,7 +115,7 @@ public class RegisterPage extends BasePage {
             securityDropdown.click();
             driver.findElement(By.tagName("body")).sendKeys(Keys.ESCAPE);
 
-            // pequeña espera hasta que aparezca al menos un mat-error (si aplica)
+            // pequeña espera hasta que aparezca al menos un mat-error
             try {
                 wait.until(d -> errorMessages.size() > 0);
             } catch (Exception ignored) {}
@@ -230,10 +222,10 @@ public class RegisterPage extends BasePage {
         // Esperar que la opción exista
         WebElement option = wait.until(ExpectedConditions.visibilityOfElementLocated(optionLocator));
 
-        // 🔥 SCROLL (clave en Angular Material)
+        // SCROLL SI ES NECESARIO (a veces el dropdown es scrollable y la opción no está visible)
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", option);
 
-        // 🔥 CLICK ROBUSTO
+        // CLICK ROBUSTO
         try {
             wait.until(ExpectedConditions.elementToBeClickable(option)).click();
         } catch (ElementClickInterceptedException e) {

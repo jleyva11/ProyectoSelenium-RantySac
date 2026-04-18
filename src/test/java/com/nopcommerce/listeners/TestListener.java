@@ -28,7 +28,6 @@ public class TestListener implements ITestListener {
                 Allure.addAttachment("Screenshot - FAIL", new ByteArrayInputStream(png));
             }
         } catch (Exception ignored) {
-            // no rompemos el test por el reporte
         }
     }
 }

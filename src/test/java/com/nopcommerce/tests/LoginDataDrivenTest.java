@@ -25,7 +25,7 @@ public class LoginDataDrivenTest extends BaseTest {
         // 3) Cerrar menú lateral si quedó abierto
         home.closeSideMenuIfOpen();
 
-        // 4) (Opcional recomendado) asegurar sin sesión
+        // 4) asegurar sin sesión
         home.forceLogoutIfLoggedIn();
         driver.get("http://localhost:3000/#/login");
         home.closeSideMenuIfOpen();

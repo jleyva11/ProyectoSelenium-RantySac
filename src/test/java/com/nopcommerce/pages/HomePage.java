@@ -43,14 +43,12 @@ public class HomePage extends BasePage {
     @FindBy(css = ".mat-drawer-backdrop.mat-drawer-shown")
     private WebElement drawerBackdrop;
 
-
     // ================= ACTIONS =================
 
     public void dismissBanner() {
         try {
             wait.until(ExpectedConditions.elementToBeClickable(closeBannerBtn)).click();
         } catch (Exception e) {
-            // si no aparece, ignora
         }
     }
 
@@ -62,17 +60,6 @@ public class HomePage extends BasePage {
             }
         } catch (Exception e) {
             System.out.println("Usuario ya autenticado, no se requiere login");
-        }
-    }
-
-    public void logoutIfLoggedIn() {
-        try {
-            if (logoutButton.isDisplayed()) {
-                safeClick(logoutButton);
-                wait.until(driver -> driver.getCurrentUrl().contains("login"));
-            }
-        } catch (Exception e) {
-            // Usuario ya estaba deslogueado
         }
     }
 
@@ -94,13 +81,11 @@ public class HomePage extends BasePage {
         }
     }
 
-
     public void openBasket() {
         safeClick(basketButton);
         wait.until(d -> d.getCurrentUrl().contains("/basket"));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("mat-table")));
     }
-
 
     public void dismissInitialPopups() {
         WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(3));
@@ -122,7 +107,7 @@ public class HomePage extends BasePage {
         try {
             // Si existe el backdrop, el menú está abierto
             if (!driver.findElements(By.cssSelector(".mat-drawer-backdrop.mat-drawer-shown")).isEmpty()) {
-                // Cerrar haciendo click en el backdrop (más confiable que intentar click en el ícono)
+                // Cerrar haciendo click en el backdrop
                 shortWait.until(ExpectedConditions.elementToBeClickable(drawerBackdrop)).click();
 
                 // Confirmar que desapareció
@@ -131,12 +116,11 @@ public class HomePage extends BasePage {
                 ));
             }
         } catch (Exception ignored) {
-            // Fallback: ESC suele cerrar el drawer en Angular Material
+            // Fallback: ESC suele cerrar
             try {
                 new Actions(driver).sendKeys(Keys.ESCAPE).perform();
             } catch (Exception ignored2) {}
         }
     }
-
 
 }

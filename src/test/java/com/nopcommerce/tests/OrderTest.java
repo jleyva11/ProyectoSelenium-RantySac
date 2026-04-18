@@ -31,7 +31,7 @@ public class OrderTest extends BaseTest {
 
         Assert.assertTrue(lp.isLoginSuccess(), "No se logró login");
 
-        // ✅ Cerrar modales bloqueantes
+        // Cerrar modales bloqueantes
         home.dismissInitialPopups();
     }
 
@@ -41,14 +41,14 @@ public class OrderTest extends BaseTest {
         shop = new ShopPage(driver);
         cart = new CartPage(driver);
 
-        // 1) Limpia carrito (esto navega a /basket)
+        // 1) Limpia carrito
         cart.clearCartIfNotEmpty();
 
         // 2) Vuelve a /search (para que addFirstProduct no falle)
         driver.get("http://localhost:3000/#/search");
     }
 
-    // ✅ TC-Order-01
+    // TC-Order-01
     @Test(groups = {"functional", "regression"}, description = "TC-Order-01 Añadir productos al carrito")
     public void TC_Order_01() {
         debugState("ANTES ADD", cart);
@@ -61,8 +61,7 @@ public class OrderTest extends BaseTest {
         Assert.assertTrue(cart.getTotalQuantity() > 0, "No se agregaron productos al carrito");
     }
 
-
-    // ✅ TC-Order-02
+    // TC-Order-02
     @Test(groups = {"functional"}, description = "TC-Order-02 Eliminar productos del carrito")
     public void TC_Order_02() {
         debugState("ANTES ADD", cart);
@@ -79,7 +78,7 @@ public class OrderTest extends BaseTest {
     }
 
 
-    // ✅ TC-Order-03
+    // TC-Order-03
     @Test(groups = {"functional"}, description = "TC-Order-03 Modificar cantidad de productos")
     public void TC_Order_03() {
         debugState("ANTES ADD", cart);
@@ -94,10 +93,8 @@ public class OrderTest extends BaseTest {
                 "La cantidad del producto no se actualizó correctamente");
     }
 
-
-    // ✅ TC-Order-04
+    // TC-Order-04
     @Test(groups = {"integration", "regression"}, description = "TC-Order-04 Creación de orden con 3 productos")
-
     public void TC_Order_04() {
         debugState("ANTES ADD", cart);
         shop.addFirstProduct();

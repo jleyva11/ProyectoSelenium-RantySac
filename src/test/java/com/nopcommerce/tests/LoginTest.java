@@ -51,8 +51,6 @@ public class LoginTest extends BaseTest {
 
     // ================= TC-Login-02 =================
     @Test(groups = {"functional"}, description = "TC-Login-02 Inicio de sesión con credenciales incorrectas")
-
-
     public void TC_Login_02() {
 
         lp.login("cualquiera@fake.com", "cualquiera");
@@ -62,32 +60,22 @@ public class LoginTest extends BaseTest {
         );
     }
 
-
     // ================= TC-Login-03 =================
     @Test(groups = {"functional"}, description = "TC-Login-03 Credenciales en blanco")
-
-
-
     public void TC_Login_03() {
 
         lp.triggerRequiredValidation();
-
         // Debug mínimo (temporal)
         System.out.println("Email DOM value: '" + lp.getEmailDomValue() + "'");
         System.out.println("Password DOM value: '" + lp.getPasswordDomValue() + "'");
-
         Assert.assertTrue(
                 lp.isEmailHtml5Invalid() && lp.isPasswordHtml5Invalid(),
                 "No se validaron campos obligatorios: HTML5 checkValidity() no detecta campos vacíos como inválidos"
         );
     }
 
-
-
-
     // ================= TC-Login-04 =================
     @Test(groups = {"regression"}, description = "TC-Login-02 Correo electrónico no registrado")
-
     public void TC_Login_04() {
 
         lp.login("noexiste@fake.com", "Password123");

@@ -24,16 +24,6 @@ public class ShopPage extends BasePage {
     @FindBy(css = "button[aria-label='Add to Basket']")
     private List<WebElement> addToBasketButtons;
 
-    // ===== NAVIGATION =====
-    public void goToShop() {
-        driver.get(SHOP_URL);
-
-        // Esperar que los productos existan
-        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(
-                By.cssSelector("button[aria-label='Add to Basket']"), 0
-        ));
-    }
-
     // ===== ACTIONS =====
 
     public void addFirstProduct() {
@@ -47,11 +37,10 @@ public class ShopPage extends BasePage {
         // 3) Click seguro (maneja overlays)
         safeClick(addToBasketButtons.get(0));
 
-        // 4) Esperar snackbar real de confirmación (MDC)
+        // 4) Esperar snackbar real de confirmación
         wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector(".mat-mdc-snack-bar-container")
         ));
     }
-
 
 }

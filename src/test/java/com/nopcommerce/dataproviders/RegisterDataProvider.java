@@ -7,7 +7,7 @@ public class RegisterDataProvider {
     @DataProvider(name = "registerData")
     public static Object[][] registerData() {
 
-        String q = "Your eldest siblings middle name?"; // usa una pregunta que exista en tu dropdown
+        String q = "Your eldest siblings middle name?"; // pregunta que exista en dropdown
         String a = "test";
 
         String uniqueEmail1 = "test" + System.currentTimeMillis() + "@mail.com";

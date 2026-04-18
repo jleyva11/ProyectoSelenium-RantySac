@@ -30,7 +30,7 @@ public class RegisterDataDrivenTest extends BaseTest {
 
         rp.openRegisterForm();
 
-        // Llenar formulario (para mismatch, repeat != pass)
+        // Llenar formulario
         rp.fillForm(email, pass, repeat, question, answer);
 
         switch (expected) {

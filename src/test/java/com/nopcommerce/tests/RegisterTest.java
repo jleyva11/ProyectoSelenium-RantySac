@@ -24,47 +24,37 @@ public class RegisterTest extends BaseTest {
     }
 
     // ================= TC-Register-01 =================
-
     @Test(groups = {"functional"}, description = "TC-Register-01 Registro exitoso")
     public void TC_Register_01() {
 
         String email = "user" + System.currentTimeMillis() + "@mail.com";
-
         rp.register(email, "Password123!", "Name of your favorite pet?", "Dog");
-
         Assert.assertTrue(rp.isRegisterSuccess(),
                 "El registro no fue exitoso con datos válidos");
     }
 
     // ================= TC-Register-02 =================
-
     @Test(groups = {"functional", "integration"}, description = "TC-Register-02 Campos obligatorios")
     public void TC_Register_02() {
 
         rp.triggerValidation();
-
         Assert.assertTrue(rp.hasRequiredFieldErrors(),
                 "No se mostraron errores de campos obligatorios");
     }
 
     // ================= TC-Register-03 =================
-
     @Test(groups = {"functional", "regression"}, description = "TC-Register-03 Validación de email")
     public void TC_Register_03() {
 
         rp.enterEmail("usuario@");
-
         Assert.assertTrue(rp.hasInvalidEmailError(),
                 "No se validó el formato incorrecto del email");
-
         rp.enterEmail("user" + System.currentTimeMillis() + "@mail.com");
-
         Assert.assertFalse(rp.hasInvalidEmailError(),
                 "Se mostró error con un email válido");
     }
 
     // ================= TC-Register-04 =================
-
     @Test(groups = {"regression"}, description = "TC-Register-04 Contraseña segura")
     public void TC_Register_04() {
 
@@ -88,7 +78,6 @@ public class RegisterTest extends BaseTest {
     }
 
     // ================= TC-Register-05 =================
-
     @Test(groups = {"integration"}, description = "TC-Register-05 Confirmación de contraseña")
     public void TC_Register_05() {
 
@@ -103,7 +92,6 @@ public class RegisterTest extends BaseTest {
     }
 
     // ================= TC-Register-06 =================
-
     @Test(groups = {"regression", "integration"}, description = "TC-Register-06 Email único")
     public void TC_Register_06() {
 
