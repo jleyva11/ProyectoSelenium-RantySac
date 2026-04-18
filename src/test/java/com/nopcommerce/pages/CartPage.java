@@ -60,8 +60,14 @@ public class CartPage extends BasePage {
     // ===== ACTIONS =====
 
     public int getCartItemsCount() {
-        // 0 es válido; no uses waits que exigen filas.
-        return cartRows.size();
+        // Si NO estamos en /basket o no existe mat-table, no espere
+        if (!driver.getCurrentUrl().contains("/basket") ||
+                driver.findElements(basketTableBy).isEmpty()) {
+            return 0;
+        }
+
+        // Ya estamos en basket: cuenta filas reales en vivo
+        return driver.findElements(cartRowBy).size();
     }
 
     public int getTotalQuantity() {
@@ -74,11 +80,19 @@ public class CartPage extends BasePage {
     }
 
     public void removeFirstItem() {
-        int initial = cartRows.size();
+        wait.until(ExpectedConditions.presenceOfElementLocated(basketTableBy));
+
+        int initial = getCartItemsCount();
         Assert.assertTrue(initial > 0, "No hay items para eliminar");
 
-        safeClick(removeButtons.get(0));
-        wait.until(d -> cartRows.size() < initial);
+        // Captura la primera fila real
+        WebElement firstRow = driver.findElements(cartRowBy).get(0);
+        WebElement firstTrash = driver.findElements(trashButtonBy).get(0);
+        safeClick(firstTrash);
+
+        // Espera que la fila capturada desaparezca
+        wait.until(ExpectedConditions.stalenessOf(firstRow));
+        wait.until(d -> getCartItemsCount() < initial);
     }
 
     public void changeQuantity(int index, int target) {

@@ -13,9 +13,23 @@ public class OrderTest extends BaseTest {
     private CartPage cart;
 
     private void debugState(String label, CartPage cart) {
-        System.out.println(label + " URL=" + driver.getCurrentUrl()
-                + " rows=" + cart.getCartItemsCount()
-                + " totalQty=" + cart.getTotalQuantity());
+        int rows = -1;
+        int qty = -1;
+
+        try {
+            rows = cart.getCartItemsCount();
+        } catch (Exception e) {
+            // no interrumpir test por debug
+        }
+        try {
+            qty = cart.getTotalQuantity();
+        } catch (Exception e) {
+            // no interrumpir test por debug
+        }
+        System.out.println(label
+                + " URL=" + driver.getCurrentUrl()
+                + " rows=" + rows
+                + " totalQty=" + qty);
     }
 
     @BeforeClass(alwaysRun = true)
@@ -25,12 +39,9 @@ public class OrderTest extends BaseTest {
         home.dismissInitialPopups();
         home.forceLogoutIfLoggedIn();
         home.goToLogin();
-
         LoginPage lp = new LoginPage(driver);
         lp.login("admin@juice-sh.op", "admin123");
-
         Assert.assertTrue(lp.isLoginSuccess(), "No se logró login");
-
         // Cerrar modales bloqueantes
         home.dismissInitialPopups();
     }
@@ -40,10 +51,8 @@ public class OrderTest extends BaseTest {
 
         shop = new ShopPage(driver);
         cart = new CartPage(driver);
-
         // 1) Limpia carrito
         cart.clearCartIfNotEmpty();
-
         // 2) Vuelve a /search (para que addFirstProduct no falle)
         driver.get("http://localhost:3000/#/search");
     }
@@ -69,14 +78,14 @@ public class OrderTest extends BaseTest {
         debugState("DESPUÉS ADD (aún en search)", cart);
         HomePage home = new HomePage(driver);
         home.openBasket();
-        debugState("EN BASKET", cart);
-        int initial = cart.getCartItemsCount();
-        cart.removeFirstItem();
-
-        Assert.assertTrue(cart.getCartItemsCount() < initial,
+        // Re-instanciar el CartPage ya estando en /basket
+        CartPage cartPage = new CartPage(driver);
+        debugState("EN BASKET", cartPage);
+        int initial = cartPage.getCartItemsCount();
+        cartPage.removeFirstItem();
+        Assert.assertTrue(cartPage.getCartItemsCount() < initial,
                 "El producto no fue eliminado del carrito");
     }
-
 
     // TC-Order-03
     @Test(groups = {"functional"}, description = "TC-Order-03 Modificar cantidad de productos")
