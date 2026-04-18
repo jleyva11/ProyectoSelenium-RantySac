@@ -47,7 +47,7 @@ jobs:
             **/target/surefire-reports/**
           if-no-files-found: warn
 
-      - name: Upload chromedriver log
+      - name: Upload ChromeDriver log
         if: always()
         uses: actions/upload-artifact@v4
         with:
