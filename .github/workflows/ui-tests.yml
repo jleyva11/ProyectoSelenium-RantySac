@@ -28,9 +28,32 @@ jobs:
           google-chrome --version || true
           which google-chrome || true
 
+      # ✅ Escenario A: Levantar OWASP Juice Shop en localhost:3000
+      - name: Start OWASP Juice Shop (Docker)
+        run: |
+          docker pull bkimminich/juice-shop
+          docker run -d --name juice-shop -p 3000:3000 bkimminich/juice-shop
+
+      # ✅ Esperar hasta que el servicio responda (readiness)
+      - name: Wait for Juice Shop readiness
+        run: |
+          for i in {1..40}; do
+            if curl -sSf "http://localhost:3000/#/" > /dev/null; then
+              echo "Juice Shop is up!"
+              exit 0
+            fi
+            echo "Waiting for Juice Shop... ($i)"
+            sleep 2
+          done
+          echo "Juice Shop did not start in time"
+          docker logs juice-shop
+          exit 1
+
+      # ✅ Ejecutar tests apuntando a localhost:3000 (evita ERR_CONNECTION_REFUSED)
       - name: Run TestNG tests (Maven)
         env:
           HEADLESS: "true"
+          BASE_URL: "http://localhost:3000/#/login"
         run: mvn -B -e clean test
 
       - name: Generate Allure HTML report
@@ -74,3 +97,10 @@ jobs:
             **/target/site/allure-report/**
             **/target/site/allure-maven-plugin/**
           if-no-files-found: warn
+
+      - name: Stop Juice Shop container
+        if: always()
+        run: |
+          docker logs juice-shop || true
+          docker stop juice-shop || true
+          docker rm juice-shop || true
