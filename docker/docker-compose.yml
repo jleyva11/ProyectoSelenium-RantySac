@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: nopcommerce_db
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  app:
+    image: sha256:a8139c141311c7f31fcf2e611125246928f703ee42827de33983fd9425d1b2f6
+    container_name: nopcommerce_app
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: testdb
+      DB_USER: testuser
+      DB_PASSWORD: testpass
+    ports:
+      - "3000:3000"
+
+volumes:
+  db_data:

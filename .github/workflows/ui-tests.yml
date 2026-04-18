@@ -1,0 +1,62 @@
+name: UI Tests (Selenium + TestNG + Allure)
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ui-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      # 1) Levantar OWASP Juice Shop en Docker (estándar: bkimminich/juice-shop + puerto 3000)
+      - name: Start OWASP Juice Shop (Docker)
+        run: |
+          docker pull bkimminich/juice-shop
+          docker run -d --name juice-shop -p 3000:3000 bkimminich/juice-shop
+      # Imagen y comando docker run documentados para Juice Shop [7](https://codingtechroom.com/question/how-to-resolve-surefire-plugin-error-vm-terminated-without-saying-goodbye)[8](https://issues.apache.org/jira/browse/SUREFIRE-1631)
+
+      # 2) Esperar a que la app esté lista (evita correr tests antes del start)
+      - name: Wait for Juice Shop readiness
+        run: |
+          for i in {1..40}; do
+            if curl -sSf http://localhost:3000/#/ >/dev/null; then
+              echo "Juice Shop is up!"
+              exit 0
+            fi
+            echo "Waiting for Juice Shop... ($i)"
+            sleep 2
+          done
+          echo "Juice Shop did not start in time"
+          docker logs juice-shop
+          exit 1
+
+      # 3) Ejecutar tests
+      - name: Run TestNG tests (Maven)
+        run: mvn clean test
+      # Allure TestNG genera resultados al ejecutar tests [1](https://stackoverflow.com/questions/56051405/using-aspectjweaver-while-running-testng-tests-programatically)
+
+      # 4) Generar reporte HTML estático
+      - name: Generate Allure HTML report
+        if: always()
+        run: mvn allure:report
+      # Allure Maven plugin soporta allure:report [2](https://www.toolsqa.com/testng/testng-dataproviders/)[3](https://www.youtube.com/watch?v=F129NsElxpE)
+
+      # 5) Publicar reporte como artifact
+      - name: Upload Allure report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/site/allure-maven
